@@ -20,7 +20,7 @@ body {
 }
 p {
   margin: 0px;
-  line-height: 1.1em;
+  line-height: 1.2em;
 }
 strong {
   font-weight: bold;
@@ -533,7 +533,7 @@ a:hover{
 }
 .reflink{
   font-size:0.8em;
-  line-height:1em;
+  line-height:0.8em;
 }
 #reftable{
   width:100%;

@@ -38,7 +38,7 @@ const context = coverScroll.getContext("2d");
 
 const frameCount = 29;
 function currentFrame(index) { 
-  return './assets/'+index.toString()+'.jpg';
+  return 'https://dst-iris.github.io/calmbeforetheswarm/assets/'+index.toString()+'.jpg';
 }
 
 function preloadImages() {

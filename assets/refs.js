@@ -1,5 +1,6 @@
-﻿//----references tooltips code----
+//----references tooltips code----
 //declare variables
+let numwidth = 25; //width of the number column of the references table in px
 let overTO;
 let leaveTO;
 let refVisible = false;
@@ -10,19 +11,30 @@ let xar = 0;
 let yar = 0;
 let xtt = 0;
 let ytt = 0;
-let ttDiv= $("#ref-tooltip");
 
+//add a placeholder div for the tooltip
+let ttDiv= $('<div id="ref-tooltip" class="ref-tooltip">  <div id="tt-content"></div><div id="tt-arrowInner"></div><div id="tt-arrowOuter"></div></div>').appendTo(document.body);
 
-$("#reftable").append('<colgroup><col width = "25px"/><col/></colgroup>');
-let reftable = $("#reftable").append('<tbody></tbody>');
+//format the reference table column widths
+$("#reftable").append('<colgroup><col width = "'+numwidth+'px"/><col/></colgroup>');
+//add a tbody element to add references to
+let reftable = $('<tbody id="test"></tbody>').appendTo("#reftable");
 
+//make sure all links in reference text are set to open in new tabs
+$('.reference a').each(function(){
+  $(this).attr('target','_blank');
+});
+
+//for each reference found in the text...
 $('.reference').each(function(index,ref){
+  //calculate its index - js starts at 0 but humans count from 1
   let refnum=index+1;
+  //add a superscript reference number in square brackets, linked to the entry in the reference table
   $(this).after('<sup id="ref'+refnum+'" class="reflink"><a href="#ref'+refnum+'-num">['+refnum+']</a></sup>');
+  //add a row to the reference table with the details
   reftable.append('<tr><td id="ref'+refnum+'-num"><a href="#ref'+refnum+'">'+refnum+'</td><td id="ref'+refnum+'-ref"></td></tr>');
  $('#ref'+refnum+'-ref').append($(this).contents());
 });
-
 
 //append mouseover/leave functions to references and tooltip, with time delay to allow hover behaviour
 $(".reflink")

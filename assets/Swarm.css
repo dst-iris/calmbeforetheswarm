@@ -661,6 +661,9 @@ td {
   width: 100%;
   z-index: 1;
   object-fit: scale-down;
+	cursor: -moz-zoom-out; 
+    cursor: -webkit-zoom-out; 
+    cursor: zoom-out;
 }
 #lboxclose{
   position:absolute;

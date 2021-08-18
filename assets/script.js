@@ -32,7 +32,7 @@ if (!String.prototype.includes) {
 // -------- lightbox code --------
 
 //append a placeholder div construct to the end of the page
-let lbox = $('<div id="lbox"><img id="lboximg" src=""/><div id="lboxclose"><svg viewBox="0 0 30 30" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg"><g><line stroke-width="2.5" stroke="#111" y2="6.5" x2="23.5" y1="23.5" x1="6.5"/><line stroke-width="2.5" stroke="#111" y2="23.5" x2="23.5" y1="6.5" x1="6.5"/></g></svg></div></div></div></div>').appendTo(document.body);
+let lbox = $('<div id="lbox"><img id="lboximg" src=""/></div></div></div>').appendTo(document.body);
 let lboximg = $('#lboximg');
 
 //add a function to toggle visibility of the lightbox and set the image source when an image is clicked
@@ -41,14 +41,9 @@ $('.imgContent').click(function(){
   lbox.fadeToggle(300);
 });
 
-//use the close button to toggle visibility back
-$('#lboxclose').click(function(){
-  lbox.fadeToggle(100);
-}); 
-
-//or click anywhere in the lightbox image to toggle visibility back
+//click anywhere in the lightbox image to toggle visibility back
 lboximg.click(function(){
-  lbox.fadeToggle(100);
+  lbox.fadeToggle(150);
 }); 
 
 // -------- cover animation code --------

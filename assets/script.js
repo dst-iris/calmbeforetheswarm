@@ -32,7 +32,7 @@ if (!String.prototype.includes) {
 // -------- lightbox code --------
 
 //append a placeholder div construct to the end of the page
-let lbox = $('<div id="lbox"><img id="lboximg" src=""/></div></div></div>').appendTo(document.body);
+let lbox = $('<div id="lbox"><img id="lboximg" src=""/></div>').appendTo(document.body);
 let lboximg = $('#lboximg');
 
 //add a function to toggle visibility of the lightbox and set the image source when an image is clicked

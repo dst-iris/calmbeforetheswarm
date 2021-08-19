@@ -449,24 +449,36 @@ a:hover{
     flex-direction: column;
   }
   .nav {
-    padding-top: 0px;
+    padding: 0px;
     margin-top:0px;
+    margin-left: calc(370px - 50vw);
+    padding-left: calc(50vw - 370px);
+    padding-right: calc(50vw - 370px);
     margin-bottom:0px;
-    width: 740px;
+    width: 100vw;
+    background-color: #f3f4f6;
   }
   .navwrap {
     padding-top: 0px;
     width: 740px;
     align-self:center;
-    background-color:white;
   }
   .nav ul {
     flex-direction: row;
     flex-wrap:wrap;
     justify-content:center;
+    width: 740px;
+  }
+  .nav ul a{
+    flex: 1 0 auto;
   }
   .nav ul li{
-    font-size:0.9rem;
+    font-size:1rem;
+    background-color: #f3f4f6;
+    text-align: center;
+  }
+  .nav ul li:hover{
+    background-color: #e4e7eb;
   }
   .contentBody h1::before { 
   margin-top: -60px; 

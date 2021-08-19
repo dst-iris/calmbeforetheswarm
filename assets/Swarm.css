@@ -383,26 +383,11 @@ svg {
 	position: -ms-sticky;
 	position: -o-sticky;
 	position: sticky;
-  display:block;
-top:0;
-}
-/* When position: sticky is supported but native behavior is ignored */
-.fixedsticky-withoutfixedfixed .fixedsticky-off,
-.fixed-supported .fixedsticky-off {
-	position: static;
-}
-.fixedsticky-withoutfixedfixed .fixedsticky-on,
-.fixed-supported .fixedsticky-on {
-	position: fixed;
-}
-.fixedsticky-dummy {
-	display: none;
-}
-.fixedsticky-on + .fixedsticky-dummy {
-	display: block;
-}
+  	display:block;
+	top:0;
+}	
 .nav {
-  margin: 10px 5px;
+  margin: 0px 5px;
   padding-top: 0px;
   width: 190px;
   flex-shrink: 0;

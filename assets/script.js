@@ -48,10 +48,8 @@ lboximg.click(function(){
 
 // -------- cover animation code --------
 
-const html = document.documentElement;
-const coverScroll = document.getElementById("coverCanvas");
-const coverDiv = document.getElementById("cover");
-const context = coverScroll.getContext("2d");
+let coverImg = document.getElementById("coverImage");
+let coverDiv = document.getElementById("cover");
 
 const frameCount = 29;
 function currentFrame(index) { 
@@ -65,51 +63,27 @@ function preloadImages() {
   }
 }
 
-const img = new Image()
-img.src = currentFrame(1);
-coverScroll.width = window.innerWidth;
-coverScroll.height = window.innerHeight;
-
 window.addEventListener('resize', function(event){
-
-  coverScroll.width = window.innerWidth;
-  coverScroll.height = window.innerHeight;
-  const spacerDiv = document.getElementById("coverCanvas");
 
   if(window.innerWidth>990 && !stickySide){
 
-    Stickyfill.remove($('#navwrap'));
-    Stickyfill.add($('#nav'));
-    stickySide=true;
+      Stickyfill.remove($('#navwrap'));
+      Stickyfill.add($('#nav'));
+      stickySide=true;
     
     } else if (window.innerWidth<=990 && stickySide){
 
       Stickyfill.remove($('#nav'));
       Stickyfill.add($('#navwrap'));
-        stickySide=false;
-    
+      stickySide=false;
+  
     }
 
 });
 
 
-img.onload = function(){
-  // get the scale
-   scale2 = Math.max(coverScroll.width / img.width, coverScroll.height / img.height);
-  // get the top left position of the image
-  var x = (coverScroll.width / 2) - (img.width / 2) * scale2;
-  var y = (coverScroll.height / 2) - (img.height / 2) * scale2;
-  context.drawImage(img, x, y, img.width * scale2, img.height * scale2);
-}
-
 function updateImage(index) {
-  img.src = currentFrame(index);
-  // get the scale
-  var scale2 = Math.max(coverScroll.width / img.width, coverScroll.height / img.height);
-  // get the top left position of the image
-  var x = (coverScroll.width / 2) - (img.width / 2) * scale2;
-  var y = (coverScroll.height / 2) - (img.height / 2) * scale2;
-  context.drawImage(img, x, y, img.width * scale2, img.height * scale2);
+  coverImg.src = currentFrame(index);
 }
 
 
@@ -119,7 +93,7 @@ let fadeScrollTop = window.innerHeight*0.75;
 
 window.addEventListener('scroll', function() {  
   
-  const scrollTop = html.scrollTop;
+  const scrollTop = document.documentElement.scrollTop;
 
   if (scrollTop<=maxScrollTop){
   

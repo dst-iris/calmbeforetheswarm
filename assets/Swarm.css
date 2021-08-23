@@ -160,6 +160,7 @@ strong {
   min-width: 100%;
   z-index:5;
   height: 100%;
+  width: 100%;
 }
 #coverCanvas {
   position: fixed;

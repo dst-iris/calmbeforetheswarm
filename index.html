@@ -1,0 +1,739 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+
+  <title>The calm before the swarm: a primer on swarming technology | IRIS</title>
+
+  <link rel="stylesheet" href="assets/Swarm.css"/>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@latest/pace.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/stickyfill/2.1.0/stickyfill.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.min.js"></script>
+  <script src="https://d3js.org/d3.v4.js"></script>
+  <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+  <script src="https://d3js.org/topojson.v2.min.js"></script>
+
+</head>
+
+<body>
+
+  <div id="mediaWarning">
+    <div id="warningText">
+      This report is designed to be read on a desktop monitor, laptop screen, or large tablet. Please switch device.
+    </div>
+  </div>
+  <div id="cover">
+    <div id="coverWrap">
+      <img id="coverImage" class="cover-image" src="assets/0.jpg" />
+      <canvas id="coverCanvas" />
+    </div>
+    <div id="titleBlock">
+      <p class="title">The calm before the swarm</p>
+      <p class="subtitle">A primer on swarming technology</p>
+      <div class="byline">
+        <div id="bylineImg">
+          <img class="byline-img" src="assets/IRIS_logo_white.png">
+        </div>
+        <div id="bylineText">
+          <p class="byline-text"><strong>IRIS</strong></p>
+          <p class="byline-text">Defence Science and Technology</p>
+        </div>
+
+      </div>
+      <p class="byline-text">July 2021</p>
+    </div>
+  </div>
+  <div id="coverSpacer">
+  </div>
+  </div>
+  <div class="bodyWrapper">
+    <div id="navwrap" class="navwrap fixedsticky">
+      <div id="nav" class="nav fixedsticky">
+        <ul>
+          <a href="#summary">
+            <li>Summary</li>
+          </a>
+          <a href="#intro">
+            <li>Introduction</li>
+          </a>
+          <a href="#what">
+            <li>What is a swarm?</li>
+          </a>
+          <a href="#why">
+            <li>Why swarms?</li>
+          </a>
+          <a href="#apps">
+            <li>Swarm applications</li>
+          </a>
+          <a href="#build">
+            <li>How to build a swarm</li>
+          </a>
+          <a href="#tech">
+            <li>Underlying tech</li>
+          </a>
+          <a href="#research">
+            <li>The state of the art</li>
+          </a>
+          <a href="#bust">
+            <li>Swarm-busting</li>
+          </a>
+          <a href="#so">
+            <li>So what?</li>
+          </a>
+          <a href="#ref">
+            <li>References</li>
+          </a>
+        </ul>
+      </div>
+    </div>
+    <div class="contentWrapperOuter">
+      <div class="contentWrapperInner">
+        <div id="summary" class="contentBody">
+          <h1>Summary</h1>
+          <p><strong>Swarms are on the cusp of being a practical reality. They offer a new way of delivering
+              functionality, with many parts coming together to form a whole. But challenges remain: designing swarm
+              behaviours – which are not a property of the component sub-units but only emerge from the entire swarm
+              system – is a difficult task. For now, readers would be right to be sceptical of bold claims: what is
+              possible in a lab far outstrips swarms' maturity in uncontrolled environments.
+              And even if/when swarms do become realistically useable in operational environments, the cost and
+              complexity of procuring and operating them may take away from their benefits.</strong></p>
+          <p><strong>Nevertheless, swarming technology does offer some compelling advantages – speed, volume, resilience
+              – and it is an area of active and growing research interest both in the UK and for our partners and
+              competitors. Commercial developments in other fields mean that the components needed for swarms are likely
+              to be available at suitably low prices, and assembling them into at least a basic swarm will not be a
+              great technical challenge. Guaranteeing that the swarm works as intended (that point about designing
+              behaviours) might take a little longer, and it's for this reason that UK Defence may need to defend
+              against swarms before it is possible to field one.
+            </strong></p>
+          <p><strong>Military-specific swarm research and development is ongoing: perhaps the less-advanced strand of
+              development is Defence thinking on command and control of swarms, and on how they might be used alongside
+              other types of autonomous system and more conventional capabilities.
+            </strong></p>
+        </div>
+        <div id="intro" class="contentBody">
+          <h1>Introduction</h1>
+          <p><strong>The swarm. A paradoxical idea of huge collective scale and small individual size. A staple of
+              modern science fiction. And now a technological reality, promising the ability to marshal vast numbers of
+              bots in service of a single goal – and the return of mass to Western militaries.</strong></p>
+          <p>So it would seem, at least, if we believe the breathless popular science articles that pop up with
+            reasonable regularity.<span class="reference">Hollings, Alex, 'Watch: Raytheon shows how drone swarms and
+              lasers will soon make warfare a sci-fi horror show', <i>SOFREP</i>, February 2019, <a target="_blank"
+                href="https://sofrep.com/news/watch-raytheon-shows-how-drone-swarms-and-lasers-will-soon-make-warfare-a-sci-fi-horror-show/">https://sofrep.com/news/watch-raytheon-shows-how-drone-swarms-and-lasers-will-soon-make-warfare-a-sci-fi-horror-show/</a></span>
+            But what’s the reality underneath the hype?
+            And what, realistically, are the benefits that swarms might bring?</p>
+        </div>
+        <div id="what" class="contentBody">
+          <h1>What is a swarm?</h1>
+          <p>Before we can answer those questions, though, we need to know what we’re actually talking about – what
+            <i>is</i> a swarm?
+          </p>
+          <p>Perhaps it's easier to start with what a swarm isn't: it isn't just a big group of things (we’ll use the
+            technical term <i>nodes</i>). There's an important conceptual distinction: when we think of a group, the
+            primary 'building blocks' are the members of the group – they separately provide capability that adds up to
+            a total effect; when we think of a swarm, <strong>the swarm itself is the primary building block</strong>,
+            with a capability that is <strong>distributed</strong> across the swarm.</p>
+          <p>A swarm is a collective, built up from nodes that each have some discrete amount of functional capability.
+            The nodes work together following a defined set of rules, collectively producing a whole that has qualities
+            and a total level of capability that are greater than the sum of its parts, a property called
+            <strong>emergence</strong>.<span class="reference">Beni, Gerardo, ‘From Swarm Intelligence to Swarm
+              Robotics’, <i>Proc. of Workshop on
+                Swarm Robotics, 8th Int'l Conf. on Simulation of Adaptive Behavior (SAB '04)</i>, 13-17 July 2004, <a
+                target="_blank"
+                href="https://doi.org/10.1007/978-3-540-30552-1_1">https://doi.org/10.1007/978-3-540-30552-1_1</a></span>
+          </p>
+          <p>The nodes that make up a swarm are <strong>interchangeable</strong>, although not necessarily completely
+            identical. They may temporarily take on different roles within the swarm; they may have some degree of
+            specialism; or a swarm might be made up of several distinct sub-populations – but a significant degree of
+            interchangeability must exist for the group to be considered a true swarm.</p>
+          <p>Swarms exist in nature as a result of many individual animals following a shared set of rules for how they
+            behave. In many cases they offer the group as a whole some sort of advantage: making it more difficult to
+            predators to catch them, bringing individuals together to mate, or making migration less energy-intensive.
+            But although the whole group benefits, the natural swarms are not guided by any central intelligence: their
+            behaviour is determined by their internal rules and their <i>boundary conditions</i> – in other words, their
+            environment. In contrast, technological swarms do need some way for a user to direct or control them if
+            they're to be practically useful. That control may be continuous or momentary (for example loading a set of
+            instructions that are then followed autonomously), and is exerted over the swarm as a whole, not individual
+            nodes: swarm nodes are <strong>autonomous</strong>. Control can be achieved in several ways:<span
+              class="reference">Verbruggen, Maaike, ‘The question of swarms control: challenges to ensuring human
+              control over military swarms’, <i>Non-Proliferation and Disarmament Paper no. 65</i>, December 2019, <a
+                target="_blank"
+                href="https://www.nonproliferation.eu/wp-content/uploads/2019/12/EUNPDC_no-65_031219.pdf">https://www.nonproliferation.eu/wp-content/uploads/2019/12/EUNPDC_no-65_031219.pdf</a></span>
+          </p>
+          <ul>
+            <li>the algorithms that each node uses to decide on its actions can be switched – for example switching from
+              a loitering mode to a travelling mode;</li>
+            <li>the parameters or objectives those algorithms use can be changed – for example setting the maximum speed
+              for a node or a target set of co-ordinates;</li>
+            <li>or the swarm's environment can be controlled, forcing it to respond in the desired way – for example
+              placing a barrier in the swarm's path.</li>
+          </ul>
+          <div class="imgDiv"><img class="imgContent" src="assets/NYE2021-Trinity-Buoy-Wharf.jpg"
+              alt="The London 2021 New Year's Eve drone display" /></div>
+          <div class="captionDiv">The London New Year's Eve 2021 fireworks featured a drone display: although there were
+            lots of them, this doesn't count as a swarm because their movements were centrally-controlled. Credit: <a
+              href="https://skymagic.show/" target="_blank">Skymagic</a>
+          </div>
+        </div>
+        <div id="why" class="contentBody">
+          <h1>Why swarms?</h1>
+          <p>Before getting any deeper into the details of swarms, there’s an important question we need to answer: why
+            should anyone be interested?</p>
+          <p>Many of the benefits of swarms come from the fact that they are made up of a large number of small
+            nodes:<span class="reference">Hammes, Thomas X., ‘The future of warfare: small, many, smart vs. few &
+              exquisite?’,
+              <i>War on the Rocks</i>, 16 July 2014, <a target="_blank"
+                href="https://warontherocks.com/2014/07/the-future-of-warfare-small-many-smart-vs-few-exquisite/">https://warontherocks.com/2014/07/the-future-of-warfare-small-many-smart-vs-few-exquisite/</a>
+            </span></p>
+          <ul>
+            <li><strong>Swarms make quick work of big jobs.</strong> The many individual nodes in a swarm mean a task
+              can be divided into many little chunks, with each node working on its own chunk at the same time as all
+              the others are working on theirs. In many cases, that means a swarm can do a job faster than a single,
+              more sophisticated entity. Say you want to take high-resolution aerial photographs of an area: a
+              100-strong swarm would in principle be able to finish quicker than a single larger aircraft.</li>
+          </ul>
+          <div class="imgDiv">
+            <img class="imgContent" src="assets/ParallelWork.gif"
+              alt="An animation of a swarm covering a set area vs a single larger entity covering the same area" />
+          </div>
+          <div class="captionDiv">An animation showing how breaking a big task down into several smaller chunks can
+            allow a swarm to do it more quickly than a single more-capable entity.
+          </div>
+          <ul>
+            <li><strong>Swarms provide volume.</strong> Swarms multiply the rate at which work can be done – every node
+              can work in parallel with the others. Swarms also offer a more straightforward sort of volume: weight of
+              numbers. This is particularly relevant in a defence and security context, both through the military
+              concept of mass and through a slightly more technological version of the same idea, in which an attacker
+              presents more targets to a defensive system than it has capacity to engage, ensuring some get through.
+              Swarms could equally be used in a defensive role, using the large number of nodes to increase the
+              likelihood one will succeed in stopping an incoming attacker.</li>
+            <li><strong>Swarms are (sometimes) cheap.</strong> The relationship between cost and capability is
+              non-linear, so it can often be less expensive to buy ten units of a basic system than to buy one unit of a
+              system with ten times the capability. If you can combine those ten units into a swarm that has the same
+              overall effect, then the swarm can provide the same amount of capability at lower cost. But the economics
+              may not always work out.</li>
+          </ul>
+          <p>A lot of these benefits can be realised with any large group, but the addition of a swarm's emergent
+            properties, the interchangeability of its nodes, and its autonomy multiplies and extends them:</p>
+          <ul>
+            <li><strong>Swarms are resilient.</strong> If one node stops working, it has only a small impact on the
+              outcome because others can step in to replace it, self-organising to re-allocate tasks. This applies
+              whether the underlying cause is some sort of failure or the result of an attack. Returning to the previous
+              example, if someone wanted to stop you photographing your target area, they’d have to eliminate every
+              single swarm node – compared to eliminating just one larger entity. </li>
+            <li><strong>Swarms are flexible.</strong> A swarm’s size and shape are not fixed, but can be reconfigured to
+              meet changing needs. This can be dynamic, the swarm adapting responsively to the context, or it can be
+              task-dependent, with a single swarm carrying out a multi-phase mission and reconfiguring itself between
+              phases. In a military context, this responsiveness can build on the effect of mass – the weight of numbers
+              – by allowing nodes to work together to confuse or avoid defensive measures, in the same way a shoal of
+              fish might work together to confuse and escape a predator.</li>
+          </ul>
+          <p>Swarms, especially technological ones, are perhaps most readily imagined as airborne things. But in fact,
+            swarms can operate in any domain: on the ground, on or under the sea, in space, or in the digital world
+            (although we tend to imagine swarms as operating in physical space, the same principles can equally be
+            applied to activity in the cyber domain).</p>
+        </div>
+        <div id="apps" class="contentBody">
+          <h1>Swarm applications</h1>
+          <p>The inherent benefits of swarms make them particularly well-suited to applications in
+            information-gathering, transport, and – in a military context – offensive or defensive uses.</p>
+          <h2>Information-gathering</h2>
+          <p>A swarm’s distributed capability means it can quickly cover a large area at close range: an airborne swarm
+            could collect close-up aerial imagery and other sensor data to rapidly build a multi-layered,
+            high-resolution map of an area – or it could fly around and through a large structure like a bridge to
+            inspect it for defects. It also means a swarm can collect measurements at the same time from different
+            places, which can be useful for the development of accurate digital models or to reduce the likelihood of
+            missing a moving target of interest in the area being surveyed.</p>
+          <p>The interchangeability of a swarm’s nodes means that a swarm can have an effective endurance far longer
+            than that of any individual node. By continuously retiring and replacing nodes for refuelling or recharging,
+            a swarm can provide extended-duration surveillance – or even permanent coverage – of an area.</p>
+          <p>To be effective in an information-gathering application, a swarm will need to be integrated with other
+            parts of a wider system. It will need to get to and from the location of interest, it will need to be
+            controlled, and the data it collects will need to be retrieved:</p>
+          <ul>
+            <li><strong>Movement.</strong> A swarm could travel from a fixed home base to a location of interest under
+              its own power, but it is more likely that it will be transported at least some of the distance in some
+              other vehicle. The way in which it is transported, deployed, and recovered – if it is to be recovered at
+              all – will all need consideration.</li>
+            <li><strong>Control.</strong> It may be advantageous for a swarm to complete its information-gathering task
+              without the need for any control link, or the user may want to have the ability to monitor it and
+              intervene: either way, it’s important to start with a good understanding of the requirement for control
+              over the swarm.</li>
+            <li><strong>Data.</strong> The time-sensitivity of the data and the availability of a suitable
+              communications link will determine whether data is sent back to a home base on the fly or if it is simply
+              downloaded at the end of the task. In this latter case, it is important to consider the way data is stored
+              within the swarm, both to avoid data loss should a node fail and to simplify the data download process.
+            </li>
+          </ul>
+          <p>The potential ability of a swarm to offer wide and persistent coverage makes swarming technology
+            particularly relevant to the multi-domain Information, Surveillance, and Reconnaissance challenge set out in
+            the <a href="https://www.gov.uk/government/publications/mod-science-and-technology-strategy-2020"
+              target="_blank">MOD Science and Technology Strategy 2020</a>. Similarly, the resilience of swarms against
+            loss of communications links – either within the swarm or with a command hub – or loss of nodes means that
+            they're also particularly relevant to the
+            Strategy's Freedom of Access and Manoeuvre challenge.</p>
+          <div class="imgDiv"><img class="imgContent" src="assets/swarm_flying_1.jpg"
+              alt="A drone swarm exploring an indoor space"></div>
+          <div class="captionDiv">An <a
+              href="https://www.tudelft.nl/en/2019/tu-delft/swarm-of-tiny-drones-explores-unknown-environments/"
+              target="_blank">experimental drone swarm exploring an indoor space</a>: similar swarms could be used to
+            map unknown buildings. Credit: Guus Schoonewille, <a
+              href="https://www.tudelft.nl/en/2019/tu-delft/swarm-of-tiny-drones-explores-unknown-environments/"
+              target="_blank">TU Delft</a>
+          </div>
+          <h2>Logistics</h2>
+          <p>A swarm can, collectively, carry a large load, can deliver it to one place or many, and can do so all at
+            once or over a longer period of time. A fire-fighting swarm could draw on water from a single source to
+            tackle fires in multiple places, or could support a much more continuous flow of water to one fire than a
+            single, larger firefighting platform. A seed-planting swarm can take a supply of seeds and quickly
+            distribute them across a field – or a similar system could deposit remote sensor packages over a wide area
+            (or equally, the nodes themselves could become the sensors).
+          </p>
+          <p>Swarms for transport will require similar consideration of the appropriate approach to control over them.
+            The introduction of a physical interface with some wider logistic system – the point at which the thing
+            being transported is transferred to the swarm – will requires some additional design effort. The large
+            number of nodes in a swarm means that any friction at that interface, like a need for human operator
+            intervention, will be amplified.</p>
+          <h2>Offensive</h2>
+          <p>The most headline-grabbing military application of swarms is in an offensive role. The combination of the
+            large number of nodes and the responsiveness of swarms makes them seem a useful tool for conducting attacks
+            against strong defences. This application requires a clear understanding of the way in which the swarm is to
+            deliver its effect, and careful consideration of how meaningful human control of the use of lethal force
+            will be maintained:</p>
+          <ul>
+            <li><strong>Concepts.</strong> A swarm could be used to evade adversary defences to strike a target, relying
+              on the inability of the defensive system to eliminate every node before the target is struck. It could be
+              used in an attritive strategy, sacrificing nodes to force the adversary to exhaust their ability to
+              continue eliminating them – or making it un-economic to do so. Or it could be used for deception,
+              saturating sensors and drawing the attention of defensive systems while some other capability executes a
+              strike. Each approach would imply different priorities for the design of the swarm and its nodes.</li>
+            <li><strong>Meaningful human control.</strong> In common with other autonomous systems, consideration of how
+              meaningful human control is exerted over the use of lethal force by swarms will be needed.</li>
+          </ul>
+        </div>
+        <div id="build" class="contentBody">
+          <h1>How to build a swarm</h1>
+          <p>So you've got an application that sounds like a good fit for a swarm: does that mean it's time to start
+            building? Well, no – first you need to double-check if a swarm is actually the right solution.
+          <h2>Is a swarm right for the job?</h2>
+          <p>Swarms build up an overall capability from many small chunks – but how small? Before you start building
+            your swarm, you have to understand what the right size for those chunks is. In some cases, it might not be
+            possible to divide up the capability to a sufficient extent to make a swarm approach make sense – or it
+            might not be possible to divide it up at all. </p>
+          <p>There are other reasons a swarm-based solution might not make sense, and these too need consideration.
+            Large numbers of nodes mean that per-node costs can quickly mount up:
+          <ul>
+            <li>if the total cost turns out to be higher than for a single platform that can meet the need then a swarm
+              will not be cost-effective;</li>
+            <li>if the expected rate at which nodes may fail or be lost is high, the cost to replace them might make
+              operating a swarm too expensive;</li>
+            <li>if the cost of powering or of refuelling the nodes is too high;</li>
+            <li>nodes need maintenance – the cost or effort needed for that may be too great.</li>
+          </ul>
+          <p>Even if the cost implications of a large number of nodes do work out, the extra development effort involved
+            in producing robust, controllable true swarming behaviour may mean that other ways of controlling large
+            numbers of nodes are more attractive – like pre-programming them or using some form of remote control,
+            resulting in a group that is not a true swarm.</p>
+          <h2>Design choices</h2>
+          <p>Once you’ve confirmed a swarm approach is right for your particular problem, you need to figure out a
+            command and control architecture. You could pre-program your swarm to carry out a task; have every node
+            connecting back to a central command and control hub; use a defined hierarchy within the swarm; use a
+            dynamic mesh network; or employ some combination of all of these. <strong>The choice of swarm architecture
+              will depend on the communications channels you’ll have available to you, practical considerations around
+              the communications abilities of each swarm member, and on how flexible or responsive you want your swarm
+              to be.</strong> The need for some form of fail-safe behaviour, the degree of autonomy desired and whether
+            that's fixed or variable, and the requirement for real-time data and control links will also influence the
+            choice.</p>
+          <div class="imgDiv">
+            <div id="boidsCanvas" height="405"></div>
+            <form>
+              <fieldset class="radio-group">
+                <legend align="left">Swarm architecture</legend>
+                <label class="radio-label"><input name="commsArch" value="0" type="radio" class="input-radio"
+                    checked>Pre-programmed</label>
+                <label class="radio-label"><input name="commsArch" value="1" type="radio" class="input-radio">Direct
+                  links</label>
+                <label class="radio-label"><input name="commsArch" value="3" type="radio"
+                    class="input-radio">Hierarchy</label><label class="radio-label"><input name="commsArch" value="2"
+                    type="radio" class="input-radio">Mesh network</label>
+
+              </fieldset>
+            </form>
+          </div>
+          <div class="captionDiv">
+            A simple simulation, based on the 'boids' algorithm proposed by Craig Reynolds<span
+              class="reference">Reynolds, Craig, ‘Flocks, herds and schools: A distributed behavioral model’,
+              <i>SIGGRAPH '87: Proceedings of the 14th Annual Conference on Computer Graphics and Interactive
+                Techniques, Association for Computing Machinery</i>, August 1987, <a target="_blank"
+                href="https://dl.acm.org/doi/10.1145/37402.37406">https://dl.acm.org/doi/10.1145/37402.37406</a></span>,
+            showing different swarm architectures. The command hub is represented by a square,
+            and communications links by lines. Click to place a target for the swarm.
+          </div>
+          <p>Some of the key advantages and disadvantages of these different architectures are summarised in the table
+            below:</p>
+          <table class="bodytable">
+            <colgroup>
+              <col width="140px" />
+              <col width="290px" />
+              <col width="290px" />
+            </colgroup>
+            <tr>
+              <th>Architecture</th>
+              <th>Advantages</th>
+              <th>Disadvantages</th>
+            </tr>
+            <tr>
+              <td>Pre-programmed</td>
+              <td>No reachback communications link for an adversary to target: can operate in comms-denied conditions.
+              </td>
+              <td>No ability to direct a change in objective after launch, or to give go/no-go for specific actions.
+              </td>
+            </tr>
+            <tr>
+              <td>Direct links</td>
+              <td>Avoids any single point of failure in the communications chain from a command hub to the swarm.</td>
+              <td>Requires every node to be capable of communicating with the command hub, potentially adding to the
+                node cost, and requires enough bandwidth for all the connections. This architecture lends itself more to
+                a non-swarm group, where the command hub does the job of co-ordinating action by each member of the
+                group.</td>
+            </tr>
+            <tr>
+              <td>Hierarchy</td>
+              <td>Limits the bandwidth needs for the swarm to hub communications link, and offers a technically simple
+                network within the swarm.</td>
+              <td>Creates a single point of failure for the swarm – although this could be mitigated by including
+                several nodes with the capability to connect back to the command hub.</td>
+            </tr>
+            <tr>
+              <td>Mesh network</td>
+              <td>Can adapt as required, offering resilience.</td>
+              <td>A slightly more complex network in the swarm, implying a small cost penalty.</td>
+            </tr>
+          </table>
+          <p>The choice of command and control architecture will also depend on the level of human control needed over
+            the swarm’s actions.<span class="reference">Verbruggen, Maaike, ‘The question of swarms control: challenges
+              to ensuring human
+              control over military swarms’, <i>Non-Proliferation and Disarmament Paper no. 65</i>, December 2019, <a
+                target="_blank"
+                href="https://www.nonproliferation.eu/wp-content/uploads/2019/12/EUNPDC_no-65_031219.pdf">https://www.nonproliferation.eu/wp-content/uploads/2019/12/EUNPDC_no-65_031219.pdf</a></span>
+            The idea of what constitutes
+            <i>meaningful</i> human control for a swarm raises a challenge: swarms are not controlled by passing
+            commands directly to swarm nodes, but by setting parameters within which the swarm as a whole operates. If
+            human control over some action the swarm might take is needed, you need to decide whether you want the swarm
+            to seek permission for each instance of that action; pre-authorise action subject to certain criteria being
+            met; or take an approach somewhere in between. This challenge is shared with other autonomous systems, but
+            is particularly acute for swarms given the defining lack of direct control over individuals.
+          </p>
+          <h2>Energy</h2>
+          <p>Another important early design consideration for your swarm is how its energy needs will be managed. Each
+            node will require energy: to move, to run processors and communications equipment, and to power sensors. The
+            size, weight, and cost of each node will need to be balanced against the length of time it can power itself
+            for. Depending on the application, nodes may be able to return to a base and refuel or recharge mid-mission,
+            or they may need to carry sufficient energy to complete it. It may also be possible to effectively share
+            energy within the swarm, either by transferring energy between nodes or by dynamically assigning
+            energy-intensive tasks to nodes with the most energy remaining.<span class="reference">Melhuish, C. and
+              Kubo, M., 'Collective Energy Distribution: Maintaining the Energy Balance in Distributed Autonomous Robots
+              using Trophallaxis', <i>Proceedings of 7th International Symposium on Distributed Autonomous Robotic
+                Systems</i>, June 2004, <a target="_blank"
+                href="https://link.springer.com/chapter/10.1007/978-4-431-35873-2_27">https://link.springer.com/chapter/10.1007/978-4-431-35873-2_27</a></span>
+          </p>
+          <h2>Simulation</h2>
+          <p>One way to generate evidence on whether a swarm-based solution is appropriate to your problem, and if so
+            what architecture might work best, is to simulate it. Simulation can also help with understanding how swarms
+            can be integrated with other elements of a wider system – or how swarms operated by other people (including
+            people with hostile intent) might affect existing systems. </p>
+          <p>The technology to simulate swarms is actually more mature than real-life swarming technology, because many
+            of the barriers to development progress for swarms are related to practicalities: things like measurement
+            errors, logistics, or the large up-front cost of building an experimental swarm. Swarm simulations have seen
+            significant academic and industry effort, with a range of proprietary and open-source tools now
+            available.<span class="reference">Soria, E., Schiano, F., and Floreano,D., 'SwarmLab: a Matlab Drone Swarm
+              Simulator',
+              2020 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS), 2020, pp. 8005-8011,
+              doi: 10.1109/IROS45743.2020.9340854, <a target="_blank"
+                href="https://ieeexplore.ieee.org/document/9340854">https://ieeexplore.ieee.org/document/9340854</a></span>
+            In general, these have been integrated into current
+            military simulation tools only in a limited, experimental way: this is a due to a combination of limited
+            demand and technical challenge (although individual node behaviours can be simulated easily, achieving a
+            simulation of emergent behaviour that matches what happens in the real world is difficult)</p>
+          <h2>Practicalities</h2>
+          <p>After you’ve got your swarm architecture sorted, you can move on to the details of designing and building
+            the swarm. There are still challenges here: you need to prioritise keeping the unit cost of swarm members
+            down if you’re to make a swarm approach cost-effective. Fortunately, some current technology trends can help
+            you out there...</p>
+        </div>
+        <div id="tech" class="contentBody">
+          <h1>Underlying tech</h1>
+          <p>Each swarm node is actually a pretty complex system in its own right. It has to fulfil several important
+            functions, and do it all at minimal cost: it will need some sort of <strong>navigational sensing</strong>,
+            so that it knows where it is relative to its environment and relative to the other swarm members; a
+            <strong>communications</strong> package to allow it to talk to its peers and/or connect back to a command
+            hub; <strong>processing</strong> capability to run the control algorithms and deal with all the data from
+            the sensors; some means of <strong>motion control</strong>; a <strong>power source</strong> to keep
+            everything running; and of course some sort of <strong>payload</strong> to provide the basic functionality
+            you want the swarm for in the first place – perhaps a camera to take photos, a seed dispenser to sow plants,
+            or an explosive warhead.
+          </p>
+          <h2 id="navsense">Navigational sensing</h2>
+          <p>Nodes will in almost all cases need an understanding of their position and surroundings for navigation and
+            collision avoidance. The
+            accuracy provided by low-cost satellite positioning or inertial navigation modules isn't good enough for a
+            swarm, but these can be combined with a wide range of readily-available sensors to improve accuracy: air
+            pressure sensors; ultrasonic/laser distance measurement for altitude sensing; and magnetic field sensors to
+            determine orientation, among others. There are many sensors of these sorts readily and cheaply available,
+            developed for use in consumer devices like smartphones or retail drones. Even greater accuracy is promised
+            by specialist 3D-scanning sensors being developed for applications like augmented reality devices or
+            self-driving cars, and by the application of real-time processing of feeds from cameras to generate 3D
+            models of the node's environment.</p>
+          <p>Communication within the swarm can also aid in refining and extending each node's awareness of its
+            surroundings, by sharing sensor data and using collaborative approaches to arrive at a shared understanding,
+            reducing the effect of individual measurement errors.</p>
+          <h2>Communications</h2>
+          <p>Data-sharing within the swarm is one reason that every node needs some sort of communications capability:
+            some or all nodes may also need the ability to communicate with a command hub. There are a variety of
+            already-developed communications standards and systems to allow in-swarm networking, including using dynamic
+            mesh approaches. These have been, and continue to be, developed for applications in consumer electronics
+            such as smart home devices and industrial 'internet of things' applications, both large and growing markets
+            that are likely to drive further development and cost reduction.</p>
+          <p>The longer-range communications requirements for connections back to a command hub are a familiar
+            requirement from
+            current military unmanned air systems, and similar technologies – with a similar degree of military
+            specificity – would apply to swarms. The major difference is the even greater imperative to focus on cost.
+          </p>
+          <p>For both intra-swarm communications and communications to a command hub, security will be an important
+            concern. The many nodes in a swarm present a large overall cyber attack surface, and could afford an
+            attacker a way to hijack the swarm.</p>
+          <h2>Processing</h2>
+          <p>Depending on the complexity of the sensor suite and the control algorithm, substantial processing ability
+            may be required. And this has to be delivered with constraints on size, weight, electrical power
+            consumption, and cost. The proliferation of smartphones has established a large demand for cheap, low-power,
+            high-performing processors, and similar problems are faced in many edge computing systems: demand for these
+            is likely to drive a continued expansion in the availability of suitable components. Looking a little
+            further ahead, trends for low-cost application-specific chips and novel low-power computing technologies
+            will also enhance the practically-achievable processing ability for swarm nodes.</p>
+          <h2>Motion control</h2>
+          <p>Any swarm needs the ability to move in the domain in which it operates: the specifics of how that is
+            achieved will of course depend on the domain. The air is perhaps the domain most closely associated with
+            swarms, and here the significant market in commercial and retail drones is driving increased availability of
+            low-cost flight control systems and motors. Other domains have fewer direct current commercial parallels,
+            but the technologies needed to support node motion control are generally mature.</p>
+          <h2>Power</h2>
+          <p>As with any vehicle, swarm nodes need a power source. It needs to be cheap, of course, but also easily (and
+            preferably autonomously) replenishable. Depending on which domain the swarm is to operate in, there will be
+            other key requirements. In most cases, the power source will be the limiting factor on the length of mission
+            the swarm can undertake: it's therefore particularly important to think carefully about whether sufficient
+            performance can be achieved for an acceptable level of cost. In many cases, swarm nodes will be powered by
+            batteries, and can therefore expect to benefit from trends for increasing battery energy density driven by
+            consumer devices and electric vehicles.</p>
+          <h2>Payload</h2>
+          <p>Last, but by no means least, swarm nodes will need some sort of payload to deliver the functionality that
+            is the reason for having the swarm in the first place. While there is a wide range of possibilities for what
+            this might be, information-gathering is perhaps a prominent example. Here, nodes can benefit from the same
+            trends that are set to increase the capability of the sensor suites available (described <a
+              href="#navsense">above</a>) as well as trends supporting the development of more compact, less expensive
+            sensors for small satellites, industrial automation, and the broad 'internet of things'.</p>
+          <h2>Integration</h2>
+          <p>After picking out the components and building your nodes, you still have to face the real technical
+            challenge: making everything work together. That’s the final, critical piece of the puzzle – and while
+            everything so far has been relatively straightforward, here we need to turn to the world of research and
+            development.</p>
+        </div>
+        <div id="research" class="contentBody">
+          <h1>The state of the art</h1>
+          <p>In principle, and depending on the task, it shouldn’t be too difficult to get a swarm up and running. It is
+            a complex task, requiring
+            some in-depth system-of-systems thinking, but it seems like it ought to be doable. Unfortunately, while
+            we’ve got quite good at designing control systems for things that work by themselves, those systems have a
+            tendency to get unstable when you bundle them together in big groups – a problem compounded by the latency
+            and error that are unavoidably present in real-world sensing and communication.<span class="reference">Liu,
+              Yang, Passino, K.M., Polycarpou, M., ‘Stability analysis of one-dimensional
+              asynchronous swarms’, <i>IEEE Transactions on Automatic Control</i>, vol. 48, no. 10, pp. 1848-1854,
+              October 2003, <a target="_blank"
+                href="https://www.doi.org/10.1109/TAC.2003.817942">https://www.doi.org/10.1109/TAC.2003.817942</a></span>
+          </p>
+          <p>So while we’ve just about got the hang of building the algorithms that can make big swarms work in
+            simulations, we’re only just starting to see those translated into real, physical swarms. Some of the
+            headline-grabbing claims of huge swarms don’t really stack up if you look at the detail: they might have
+            involved large numbers of nodes, but they often involve some degree of centralised remote control. Reports
+            of swarm attacks on a Russian military base in Syria, for example, were based on the fact that the attackers
+            used several small drones flying towards the target at the same time – but the drones weren’t collaborating
+            or co-ordinating with each other.<span class="reference">Wright, Tim, ‘When is a Drone Swarm Not a Swarm?’,
+              <i>Air and Space Magazine</i>, 12
+              January 2018, <a target="_blank"
+                href="https://www.airspacemag.com/daily-planet/when-drone-swarm-not-swarm-180967820/">https://www.airspacemag.com/daily-planet/when-drone-swarm-not-swarm-180967820/</a>
+            </span> On the other hand, some
+            demonstrations of swarm technology are credible, indicating that true swarms may become a practical reality
+            within the next 5-10 years.</p>
+          <div class="imgDiv"><img class="imgContent" src="assets/Khmeimim-drone.jpg"
+              alt="A drone recovered from an attack on a Russian military base in Syria"></div>
+          <div class="captionDiv">One of the drones used to attack a Russian military base in Syria in 2018. The drone
+            was pre-programmed with GPS co-ordinates for its target: more a low-tech fire-and-forget missile than a
+            swarm. Credit: Russian Ministry of Defence
+          </div>
+          <p>Perhaps the most convincing demonstration to date of a true swarm comes from the US Perdix drone project. A
+            test in 2017 saw 103 of these small, low-cost drones being launched from F/A-18 Super Hornet aircraft and
+            autonomously carrying out a series of manoeuvres.<span class="reference">Mehta, Aaron, ‘Pentagon Launches
+              103 Unit Drone Swarm’, <i>Defense News</i>, 10 January
+              2017, <a target="_blank"
+                href="https://www.defensenews.com/air/2017/01/10/pentagon-launches-103-unit-drone-swarm/">https://www.defensenews.com/air/2017/01/10/pentagon-launches-103-unit-drone-swarm/</a>
+            </span> The drones
+            themselves were designed using widely commercially-available components at MIT’s Lincoln Lab, carrying a
+            small camera to capture images of targets. India’s more recent demonstration of a 75-strong swarm also seems
+            broadly credible: this involved a group made up of several types of drone collaborating to identify and
+            strike targets, although the degree to which the behaviour was pre-programmed is unclear, and the task was
+            deliberately simple, using an uncluttered test area and stationary targets.<span class="reference">Hambling,
+              David, ‘Indian Army shows off drone swarm of mass destruction’,
+              <i>Forbes</i>, 19 January 2021, <a target="_blank"
+                href="https://www.forbes.com/sites/davidhambling/2021/01/19/indian-army-shows-off-drone-swarm-of-mass-destruction/?sh=2c9ec92e2384">https://www.forbes.com/sites/davidhambling/2021/01/19/indian-army-shows-off-drone-swarm-of-mass-destruction/?sh=2c9ec92e2384</a>
+            </span></p>
+          <div class="imgDiv">
+            <iframe name="frame1" src="https://www.dvidshub.net/video/embed/504622" width="720" height="423"
+              frameborder="0" allowtransparency allowfullscreen></iframe>
+          </div>
+          <div class="captionDiv" style="transform: translateY(-22px); margin-bottom: calc(0.9rem - 22px);">A video of a
+            previous demonstration of Perdix swarming drones. Source: <a
+              href="https://www.dvidshub.net/video/504622/perdix-swarm-demo-oct-2016" target="_blank">US DoD</a>
+          </div>
+          <p>The US’s success with Perdix reflects its position as the world leader in carrying out swarming research.
+            China also produces a large volume of research in the area – ranking second globally in the <i>count of
+              scientific papers in the top 10% by citations</i> (a measure that attempts to combine both volume and
+            quality). But the quality of China’s output is difficult to judge: the standard metrics for research impact
+            place it behind the UK and the US, and it is significantly less internationally-connected, with just 25% of
+            Chinese swarming research involving international collaborations, compared with 60% for the UK or 40% for
+            the US.</p>
+          <div class="imgDiv">
+            <svg id="choropleth" width="720" height="405"></svg>
+          </div>
+          <div class="captionDiv">A heatmap showing the count of scientific papers published 2016-2020 in the top 10% by
+            citations. Hover your cursor over a country to see its stats, or click on a country to zoom in. Data: Web of
+            Science
+          </div>
+          <p>Military demonstrations and academic research aren’t the full story of swarming technology, however:
+            there’s a commercial side, too. Swarming systems have potential applications in several markets, drawing on
+            their ability to multiply the capability a single human operator can wield: to plant seeds, spray
+            fertilisers, and monitor crops in agricultural settings<span class="reference">Wilson, Ken, ‘Swarms are
+              coming to a farm near you’, <i>Farm Weekly</i>, 14 August
+              2019, <a target="_blank"
+                href="https://www.farmweekly.com.au/story/6327157/swarms-are-coming-to-a-farm-near-you/">https://www.farmweekly.com.au/story/6327157/swarms-are-coming-to-a-farm-near-you/</a>
+            </span>; to map
+            mining operations<span class="reference">Stringer, David, ‘How Robots, Drones Are Transforming Mining and
+              Mine Safety’,
+              <i>Insurance Journal</i>, 4 April 2014, <a target="_blank"
+                href="https://www.insurancejournal.com/news/national/2014/04/04/325475.htm">https://www.insurancejournal.com/news/national/2014/04/04/325475.htm</a>
+            </span>; to tackle wildfires<span class="reference">Lenz, Max, ‘Drone Swarms for Firefighting: the Future of
+              Fire Suppression?’, <i>Drone
+                Life</i>, 28 April 2021, <a target="_blank"
+                href="https://dronelife.com/2021/04/28/drone-swarms-for-firefighting-the-future-of-fire-supression/">https://dronelife.com/2021/04/28/drone-swarms-for-firefighting-the-future-of-fire-supression/</a>
+            </span>; or to survey marine environments<span class="reference">Duarte, Miguel et al., ‘Application of
+              swarm robotics systems to marine environmental
+              monitoring,’ <i>OCEANS 2016 - Shanghai</i>, 2016, 10-13 April 2016, <a target="_blank"
+                href="https://ieeexplore.ieee.org/document/7485429">https://ieeexplore.ieee.org/document/7485429</a></span>.
+            Many of these commercial applications involve more controlled environments
+            than a military context, with fewer complicating factors and less need for meaningful human control over
+            actions: we may therefore see commercial swarms fielded before military swarms. This may present
+            opportunities for militaries to learn from and drawn on civilian systems, as well as the potential for
+            adversaries with fewer ethical constraints to employ these systems offensively.</p>
+        </div>
+
+        <div id="bust" class="contentBody">
+          <h1>Swarm-busting</h1>
+          <p>The basic technology required to build a swarm is driven by the commercial world and is, or will be, easily
+            commercially available. The greatest challenges facing a responsible user of swarms – ensuring that
+            behaviours are robust to unexpected stimuli, maintaining meaningful human control over lethal force,
+            integrating swarms into wider systems and concepts – may not be so important to every actor. It’s therefore
+            reasonably likely that the UK will find swarms being used against us before we field a swarm of our own.
+            Understanding how to tackle a hostile swarm is therefore important – and will be useful later to improve the
+            resilience of any future UK swarm. There are two main categories of approach you could use: target the
+            system – the swarm and its wider system of command and control – or target the nodes that make up the swarm.
+          </p>
+          <h2>Target the system</h2>
+          <p>A swarm must be controllable to be useful. A hostile swarm may maintain some sort of communications link
+            back to its operator: targeting that link could prevent further commands being issued to the swarm, forcing
+            it to revert to autonomous operation based on pre-programmed objectives and its own, self-generated
+            situational awareness. Tracing the communications link can also allow the adversary’s command and control
+            architecture to be mapped, and can provide evidence to support identification of the operator of the swarm.
+            If possible, spoofing the link may allow the swarm to be effectively hijacked. </p>
+          <p>As described <a href="#what">at the start of this primer</a>, another way to control a swarm – besides
+            sending it commands – is to control its environment. If you can present a swarm’s sensors with stimuli that
+            you design, you can use its own control algorithm against it. This could mean spoofing a global navigation
+            satellite system signal, blinding visible-light sensors with bright lights, or using flares to deceive
+            infra-red cameras. The need to keep node costs low may make this an easier task than for other systems:
+            low-cost sensors may lack built-in protections, leaving them vulnerable to manipulation. </p>
+          <p>A swarm relies on information flows to be effective.<span class="reference">Aquilla, John and Ronfeldt,
+              David, ‘Swarming & the future of conflict’, RAND
+              Corporation, 2000, <a target="_blank"
+                href="https://www.rand.org/content/dam/rand/pubs/documented_briefings/2005/RAND_DB311.pdf">https://www.rand.org/content/dam/rand/pubs/documented_briefings/2005/RAND_DB311.pdf</a></span>
+            Without
+            intra-swarm information flows, it is reduced from being a swarm to just being a group of un-co-ordinated
+            nodes. As with sensors, the use of low-cost communications links within the swarm may leave these
+            vulnerable. </p>
+          <h2>Target the nodes</h2>
+          <p>The easiest way to target the nodes that make up a swarm is to do so with something that affects all of
+            them – or at least a large number of them – at the same time. The need to keep per-node costs down by using
+            off-the-shelf components and the likely small size of nodes may mean they are easily destroyed or disrupted
+            using explosive weapons with a large blast radius or electronic warfare capabilities that interfere with
+            their control systems or propulsion. </p>
+          <p>If, on the other hand, you do need to target nodes individually, you’ll need to use a weapon with a low
+            cost per shot – and ideally one with minimal physical re-supply needs. Directed energy weapons are a good
+            fit here, particularly for a situation in which power is in plentiful supply, like a fixed base or a large
+            platform. Directed energy weapons also have the advantages of acting faster than a swarm’s reaction time,
+            and of having (potentially) low cycle times, allowing many shots in a short period. But there are lower-tech
+            alternatives, too: a water cannon might offer a useful defence against lightweight airborne swarm nodes, for
+            example. </p>
+          <p>Perhaps the ultimate counter-swarm approach would combine these two attributes: capacity to engage multiple
+            nodes simultaneously, and at a low cost per shot. Distributed capability and low per-node cost are
+            attributes of swarms – a counter-swarm swarm would make conceptual sense, and would have the potential to
+            address other close-in threats as well. </p>
+
+        </div>
+        <div id="so" class="contentBody">
+          <h1>So what?</h1>
+          <p>Producing a practically useful swarm remains a challenging engineering problem, and many reports of
+            swarming achievements are likely to overstate successes. Per-node cost is probably an equal or greater
+            obstacle, compared with technology, to development of an operational swarm today. Growing availability of
+            low-cost components and continued development effort mean that <strong>swarms may be mature enough to be
+              applied in
+              several commercial markets, as well as in a military context, within the next 5-10 years.</strong></p>
+          <p>Many of the advantages swarms offer are a result of co-ordinated action by multiple nodes. These benefits
+            can be realised with a system that falls short of the definition of a true swarm – for example using a large
+            number of nodes controlled directly by a central hub. The additional autonomy of a true swarm will amplify
+            the benefits, but the additional development effort required may not be worthwhile in all cases.</p>
+          <p>Swarms have many potential applications in Defence, with information-gathering and transport offering less
+            challenging control problems than offensive roles. Those control problems may not exist for adversaries, and
+            we can expect the UK to be the target of a swarm attack before we field an offensive swarm of our own.
+            Although defending against an attacking swarm seems a challenge, the inherent characteristics of a swarm can
+            be used against it, tackling it at a system level by disrupting information flows within the swarm or by
+            manipulating the swarm’s understanding of its environment to take control of it. The need to maintain low
+            per-node costs is a weakness, as it may mean the de-prioritisation of protective features.
+            Targeting these offers one way to affect multiple nodes at once, the most effective approach to eliminating
+            a
+            swarm. But if that isn’t possible, a counter-swarm weapon will need to have a low cost per shot, suggesting
+            that directed energy weapons may be particularly well-suited to the role. A counter-swarm swarm may also be
+            a good option, given that it combines low cost with capacity to engage multiple targets simultaneously.
+          </p>
+          <hr>
+        </div>
+        <div id="ref" class="contentBody">
+          <h1 style="font-size: 1.8em;">References</h1>
+          <table id="reftable">
+          </table>
+        </div>
+      </div>
+    </div>
+    <div id="navBalance" class="nav">
+      &nbsp;
+    </div>
+  </div>
+
+  <script src="assets/script.js"></script>
+  <script src="assets/refs.js"></script>
+  <script src="assets/boids.js"></script>
+  <script src="assets/choropleth.js"></script>
+
+</body>
+
+</html>
